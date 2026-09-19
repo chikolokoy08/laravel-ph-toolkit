@@ -1,0 +1,18 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    level: 10
+    paths:
+        - src
+        - tests
+    # Pest binds a test closure to the TestCase at run time, so PHPStan cannot
+    # resolve $this inside one. The files that hold those closures are skipped;
+    # everything that ships, and the test support classes, are analysed.
+    excludePaths:
+        analyseAndScan:
+            - tests/Pest.php
+            - tests/*/*Test.php
+    tmpDir: build/phpstan
+    reportUnmatchedIgnoredErrors: true
+    treatPhpDocTypesAsCertain: false

@@ -1,0 +1,88 @@
+{
+    "name": "chikolokoy08/laravel-ph-toolkit",
+    "description": "Validators, formatters, and PSGC address data for Philippine apps, with Laravel validation rules, casts, and an address selector.",
+    "keywords": [
+        "laravel",
+        "philippines",
+        "psgc",
+        "validation",
+        "mobile-number",
+        "tin",
+        "zip-code",
+        "peso",
+        "address"
+    ],
+    "homepage": "https://github.com/chikolokoy08/laravel-ph-toolkit",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Carlo Andro Mabugay",
+            "homepage": "https://github.com/chikolokoy08"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/chikolokoy08/laravel-ph-toolkit/issues",
+        "source": "https://github.com/chikolokoy08/laravel-ph-toolkit"
+    },
+    "require": {
+        "php": "^8.2",
+        "ext-intl": "*",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.6",
+        "laravel/pint": "^1.20",
+        "orchestra/testbench": "^10.0 || ^11.0",
+        "pestphp/pest": "^3.8 || ^4.0",
+        "phpoffice/phpspreadsheet": "^5.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Chikolokoy08\\PhToolkit\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Chikolokoy08\\PhToolkit\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "build:psgc": "@php bin/build-psgc.php",
+        "lint": "pint --test",
+        "format": "pint",
+        "analyse": "phpstan analyse",
+        "test": "pest",
+        "check": [
+            "@lint",
+            "@analyse",
+            "@test"
+        ]
+    },
+    "scripts-descriptions": {
+        "build:psgc": "Rebuild data/psgc from the PSA workbook in data/raw.",
+        "lint": "Check code style with Pint.",
+        "format": "Fix code style with Pint.",
+        "analyse": "Run PHPStan through Larastan.",
+        "test": "Run the Pest suite.",
+        "check": "Run style, static analysis, and tests."
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Chikolokoy08\\PhToolkit\\Laravel\\PhToolkitServiceProvider"
+            ],
+            "aliases": {
+                "PhToolkit": "Chikolokoy08\\PhToolkit\\Laravel\\Facades\\PhToolkit"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

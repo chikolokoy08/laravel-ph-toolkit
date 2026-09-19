@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  style:
+    name: Pint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl
+          coverage: none
+      - uses: ramsey/composer-install@v4
+        with:
+          dependency-versions: highest
+      - run: vendor/bin/pint --test
+
+  static-analysis:
+    name: PHPStan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: intl
+          coverage: none
+      - uses: ramsey/composer-install@v4
+        with:
+          dependency-versions: highest
+      - run: vendor/bin/phpstan analyse --no-progress
+
+  tests:
+    name: PHP ${{ matrix.php }}, Laravel ${{ matrix.laravel }}, ${{ matrix.dependencies }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { php: '8.2', laravel: 12, testbench: '^10.0', dependencies: lowest }
+          - { php: '8.2', laravel: 12, testbench: '^10.0', dependencies: highest }
+          - { php: '8.3', laravel: 12, testbench: '^10.0', dependencies: highest }
+          - { php: '8.4', laravel: 12, testbench: '^10.0', dependencies: highest }
+          - { php: '8.3', laravel: 13, testbench: '^11.0', dependencies: highest }
+          - { php: '8.4', laravel: 13, testbench: '^11.0', dependencies: highest }
+          - { php: '8.5', laravel: 13, testbench: '^11.0', dependencies: highest }
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: intl
+          coverage: none
+
+      # Pinning the framework and Testbench majors together is what selects the
+      # PHPUnit line, and with it the Pest major that resolves alongside it:
+      # Laravel 12 gets Testbench 10, PHPUnit 11, and Pest 3, Laravel 13 gets
+      # Testbench 11, PHPUnit 12, and Pest 4.
+      - name: Pin the Laravel version
+        run: |
+          composer require --no-interaction --no-update \
+            "illuminate/contracts:^${{ matrix.laravel }}.0" \
+            "illuminate/support:^${{ matrix.laravel }}.0"
+          composer require --dev --no-interaction --no-update \
+            "orchestra/testbench:${{ matrix.testbench }}"
+
+      - uses: ramsey/composer-install@v4
+        with:
+          dependency-versions: ${{ matrix.dependencies }}
+
+      - run: vendor/bin/pest --ci

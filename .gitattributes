@@ -1,0 +1,18 @@
+* text=auto eol=lf
+
+# Keep the published package to the source it needs at run time. data/psgc is
+# deliberately not ignored: the address lookups read those files from the
+# installed copy.
+/tests               export-ignore
+/docs                export-ignore
+/bin                 export-ignore
+/data/raw            export-ignore
+/.github             export-ignore
+/.editorconfig       export-ignore
+/.gitattributes      export-ignore
+/.gitignore          export-ignore
+/phpstan.neon        export-ignore
+/phpunit.xml         export-ignore
+/pint.json           export-ignore
+/CONTRIBUTING.md     export-ignore
+/SECURITY.md         export-ignore

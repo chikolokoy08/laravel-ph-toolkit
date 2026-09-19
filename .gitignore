@@ -1,0 +1,11 @@
+/vendor/
+/build/
+composer.lock
+.phpunit.result.cache
+.phpunit.cache/
+.DS_Store
+
+# PSA source workbooks are large and redistributable only from the PSA.
+# The generated PHP in data/psgc/ is committed instead.
+/data/raw/*
+!/data/raw/.gitkeep
