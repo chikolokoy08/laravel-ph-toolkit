@@ -40,6 +40,11 @@ describe('formatPeso', function (): void {
         expect(Currency::formatPeso(null))->toBeNull();
     });
 
+    it('formats at the highest decimal count Intl allows', function (): void {
+        expect(Currency::formatPeso(1234.5, decimals: 100))
+            ->toBe('₱1,234.5'.str_repeat('0', 99));
+    });
+
     it('returns null for a decimal count out of range', function (int $decimals): void {
         expect(Currency::formatPeso(1234.5, decimals: $decimals))->toBeNull();
     })->with([

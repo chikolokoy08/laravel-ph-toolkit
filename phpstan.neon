@@ -4,6 +4,7 @@ includes:
 parameters:
     level: 10
     paths:
+        - bin
         - src
         - tests
     # Pest binds a test closure to the TestCase at run time, so PHPStan cannot

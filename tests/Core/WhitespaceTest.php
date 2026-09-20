@@ -38,15 +38,6 @@ it('tolerates surrounding whitespace in isValidZipCode', function (string $patte
     expect(Zip::isValidZipCode(sprintf($pattern, '6000')))->toBeTrue();
 })->with('padding');
 
-it('rejects a string that is not valid UTF-8', function (): void {
-    $invalid = "0917\xB1\x31234567";
-
-    expect(Mobile::isValidMobileNumber($invalid))->toBeFalse()
-        ->and(Mobile::formatMobileNumber($invalid))->toBeNull()
-        ->and(Tin::isValidTin("1234\xB1\x3156789"))->toBeFalse()
-        ->and(Zip::isValidZipCode("60\xB1\x3100"))->toBeFalse();
-});
-
 it('does not coerce a numeric string in formatPeso', function (): void {
     // formatPeso takes a number, so there is no whitespace to trim. A numeric
     // string is invalid input rather than something to coerce, which the

@@ -19,7 +19,12 @@ final class Currency
 
     private const CURRENCY = 'PHP';
 
-    /** Intl accepts 0 through 100 fraction digits and rejects anything else. */
+    /**
+     * Intl accepts 0 through 100 fraction digits and throws a RangeError
+     * outside that, which ph-toolkit turns into null. ICU clamps instead of
+     * refusing, so the bound is enforced here to keep the two packages
+     * agreeing on what counts as out of range.
+     */
     private const MAX_DECIMALS = 100;
 
     private function __construct()
