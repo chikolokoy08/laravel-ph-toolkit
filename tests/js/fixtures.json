@@ -1,0 +1,44 @@
+{
+    "/ph-toolkit/regions": [
+        { "code": "0700000000", "name": "Region VII (Central Visayas)" },
+        { "code": "1300000000", "name": "National Capital Region (NCR)" }
+    ],
+    "/ph-toolkit/provinces?region=0700000000": [
+        { "code": "0701200000", "name": "Bohol", "regionCode": "0700000000", "isProvince": true },
+        { "code": "0702200000", "name": "Cebu", "regionCode": "0700000000", "isProvince": true }
+    ],
+    "/ph-toolkit/provinces?region=1300000000": [],
+    "/ph-toolkit/cities?region=0700000000": [
+        { "code": "0701201000", "name": "Tagbilaran", "provinceCode": "0701200000", "regionCode": "0700000000", "parentCityCode": null, "type": "City" },
+        { "code": "0702201000", "name": "Argao", "provinceCode": "0702200000", "regionCode": "0700000000", "parentCityCode": null, "type": "Municipality" },
+        { "code": "0730600000", "name": "City of Cebu", "provinceCode": null, "regionCode": "0700000000", "parentCityCode": null, "type": "City" },
+        { "code": "0731100000", "name": "City of Mandaue", "provinceCode": null, "regionCode": "0700000000", "parentCityCode": null, "type": "City" }
+    ],
+    "/ph-toolkit/cities?province=0702200000": [
+        { "code": "0702201000", "name": "Argao", "provinceCode": "0702200000", "regionCode": "0700000000", "parentCityCode": null, "type": "Municipality" },
+        { "code": "0702202000", "name": "Asturias", "provinceCode": "0702200000", "regionCode": "0700000000", "parentCityCode": null, "type": "Municipality" }
+    ],
+    "/ph-toolkit/cities?region=1300000000": [
+        { "code": "1380600000", "name": "City of Manila", "provinceCode": null, "regionCode": "1300000000", "parentCityCode": null, "type": "City" },
+        { "code": "1381000000", "name": "City of Parañaque", "provinceCode": null, "regionCode": "1300000000", "parentCityCode": null, "type": "City" }
+    ],
+    "/ph-toolkit/cities?region=1300000000&include_sub_municipalities=1": [
+        { "code": "1380600000", "name": "City of Manila", "provinceCode": null, "regionCode": "1300000000", "parentCityCode": null, "type": "City" },
+        { "code": "1380601000", "name": "Tondo I/II", "provinceCode": null, "regionCode": "1300000000", "parentCityCode": "1380600000", "type": "SubMunicipality" },
+        { "code": "1381000000", "name": "City of Parañaque", "provinceCode": null, "regionCode": "1300000000", "parentCityCode": null, "type": "City" }
+    ],
+    "/ph-toolkit/barangays?city=0730600000": [
+        { "code": "0730600001", "name": "Adlaon", "cityCode": "0730600000" },
+        { "code": "0730600041", "name": "Lahug", "cityCode": "0730600000" }
+    ],
+    "/ph-toolkit/barangays?city=0702201000": [
+        { "code": "0702201001", "name": "Poblacion", "cityCode": "0702201000" }
+    ],
+    "/ph-toolkit/barangays?city=1380600000": [
+        { "code": "1380601001", "name": "Barangay 1", "cityCode": "1380601000" },
+        { "code": "1380601002", "name": "Barangay 2", "cityCode": "1380601000" }
+    ],
+    "/ph-toolkit/barangays?city=1381000000": [
+        { "code": "1381000001", "name": "Baclaran", "cityCode": "1381000000" }
+    ]
+}

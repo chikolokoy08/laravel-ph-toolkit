@@ -16,3 +16,9 @@
 /pint.json           export-ignore
 /CONTRIBUTING.md     export-ignore
 /SECURITY.md         export-ignore
+
+# Never tracked, so git archive skips them anyway. Listed so a Composer path
+# repository does not mirror them into a consuming application's vendor.
+/vendor              export-ignore
+/build               export-ignore
+/composer.lock       export-ignore

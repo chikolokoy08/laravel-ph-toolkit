@@ -26,7 +26,6 @@
     },
     "require": {
         "php": "^8.2",
-        "ext-intl": "*",
         "illuminate/contracts": "^12.0 || ^13.0",
         "illuminate/support": "^12.0 || ^13.0"
     },
@@ -36,6 +35,9 @@
         "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^3.8 || ^4.0",
         "phpoffice/phpspreadsheet": "^5.0"
+    },
+    "suggest": {
+        "ext-intl": "Needed by Currency::formatPeso(). Without it peso formatting throws a clear exception and everything else in the package works, including the validators, the casts, the rules, and the PSGC address data."
     },
     "autoload": {
         "psr-4": {
@@ -51,7 +53,7 @@
         "build:psgc": "@php bin/build-psgc.php",
         "lint": "pint --test",
         "format": "pint",
-        "analyse": "phpstan analyse",
+        "analyse": "phpstan analyse --memory-limit=512M",
         "test": "pest",
         "check": [
             "@lint",
@@ -63,7 +65,7 @@
         "build:psgc": "Rebuild data/psgc from the PSA workbook in data/raw.",
         "lint": "Check code style with Pint.",
         "format": "Fix code style with Pint.",
-        "analyse": "Run PHPStan through Larastan.",
+        "analyse": "Run PHPStan through Larastan. PHPStan needs more than PHP's default 128M.",
         "test": "Run the Pest suite.",
         "check": "Run style, static analysis, and tests."
     },

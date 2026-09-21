@@ -8,7 +8,7 @@ through the JSON endpoints and the Blade component.
 
 ## Server side
 
-Every lookup is synchronous and reads bundled data:
+Every lookup is synchronous, reads bundled data, and needs no extensions:
 
 ```php
 use Chikolokoy08\PhToolkit\Address;
@@ -26,7 +26,9 @@ regions does not load the 42,010 barangays. Loading the full barangay set costs
 about 12 MB, or 7.3 MB when opcache is sharing the array between requests.
 
 Name search is case- and accent-insensitive, so `'paranaque'` matches
-`'Parañaque'`.
+`'Parañaque'`. It folds accents with `Normalizer` when the `intl` extension is
+installed and with a built-in table for the Latin ranges when it is not. The
+two agree on every name in the dataset.
 
 ## Two things that make a naive cascade wrong
 

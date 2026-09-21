@@ -1,0 +1,12 @@
+{
+    "name": "laravel-ph-toolkit-selector-tests",
+    "private": true,
+    "description": "Browser-side tests for the ph-address-selector Blade component.",
+    "type": "module",
+    "scripts": {
+        "test": "node --test"
+    },
+    "devDependencies": {
+        "jsdom": "^27.0.0"
+    }
+}

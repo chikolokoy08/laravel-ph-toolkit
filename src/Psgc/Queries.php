@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Chikolokoy08\PhToolkit\Psgc;
 
+use Chikolokoy08\PhToolkit\Internal\Accents;
 use Chikolokoy08\PhToolkit\Internal\Separators;
-use Normalizer;
 
 /**
  * The lookups, written against any index so they can be tested on a small
@@ -164,7 +164,7 @@ final class Queries
 
         return array_values(array_filter(
             $items,
-            static fn (Region|Province|City|Barangay $item): bool => str_contains(self::fold($item->name), $needle),
+            static fn (Region|Province|City|Barangay $item): bool => str_contains(Accents::fold($item->name), $needle),
         ));
     }
 
@@ -176,22 +176,7 @@ final class Queries
 
         $trimmed = Separators::trim($query);
 
-        return $trimmed === null || $trimmed === '' ? null : self::fold($trimmed);
+        return $trimmed === null || $trimmed === '' ? null : Accents::fold($trimmed);
     }
 
-    /** Diacritics are folded so "Parañaque" and "Paranaque" match each other. */
-    private static function fold(string $value): string
-    {
-        $decomposed = Normalizer::normalize($value, Normalizer::FORM_D);
-
-        // Normalization fails on input that is not valid UTF-8. Searching the
-        // raw bytes still behaves sensibly, so the original is kept.
-        if (! is_string($decomposed)) {
-            $decomposed = $value;
-        }
-
-        $stripped = preg_replace('/\p{Mn}+/u', '', $decomposed);
-
-        return mb_strtolower($stripped ?? $decomposed, 'UTF-8');
-    }
 }

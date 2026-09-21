@@ -177,8 +177,26 @@ Currency::formatPeso(1234.5, locale: 'fil-PH');  // '₱1,234.50'
 Currency::formatPeso(NAN);                       // null
 ```
 
-`decimals` must be between 0 and 100, and the locale must be a valid BCP 47
-tag. Anything else returns `null`.
+`decimals` must be between 0 and 100, and the locale must be a well formed
+BCP 47 tag. Anything else returns `null`.
+
+`formatPeso` is the only part of this package that needs the `intl` extension.
+Without it the call throws `MissingIntlExtension`, and the message says how to
+install and enable the extension. It throws rather than returning `null`
+because a missing extension is a broken server, not a value the caller can
+correct, and it throws before looking at the arguments so a bad value cannot
+hide it. Everything else here, including the address data and its name search,
+works without `intl`.
+
+The tag's shape is checked before it reaches Intl, because PHP is not
+consistent here: PHP 8.2 takes `'not a locale'` and quietly formats with a
+fallback, where 8.3 and later throw. With the check, every supported PHP
+version returns `null` for the same input.
+
+One narrow difference remains. A tag that is well formed but names no locale
+ICU knows, such as `'zz-ZZ'`, formats with a fallback on PHP 8.2 and returns
+`null` on 8.3 and later. Real language tags behave the same everywhere, so this
+only shows up if you pass something invented.
 
 ## Validating an address
 

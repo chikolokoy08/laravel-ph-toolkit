@@ -41,8 +41,12 @@ final class AddressSelector extends Component
         if (config('ph-toolkit.routes.enabled') !== true) {
             throw new RuntimeException(
                 'The <x-ph-address-selector /> component reads the ph-toolkit address endpoints, '.
-                'which are disabled. Set PH_TOOLKIT_ROUTES_ENABLED=true, or routes.enabled in '.
-                'config/ph-toolkit.php, to turn them on.',
+                'and they are turned off. To turn them on, add this line to your .env file: '.
+                'PH_TOOLKIT_ROUTES_ENABLED=true. Run "php artisan config:clear" afterwards if '.
+                'your configuration is cached. To set it in a published config file instead, run '.
+                '"php artisan vendor:publish --tag=ph-toolkit-config" and change '."'enabled'".
+                ' to true under '."'routes'".' in config/ph-toolkit.php. Confirm the endpoints '.
+                'exist with "php artisan route:list --path=ph-toolkit".',
             );
         }
 

@@ -18,7 +18,12 @@ it('refuses to render while the address routes are off', function (): void {
     } catch (ViewException $exception) {
         // Blade wraps whatever a component throws, so the cause is what says
         // which setting to turn on.
-        expect($exception->getMessage())->toContain('PH_TOOLKIT_ROUTES_ENABLED')
+        expect($exception->getMessage())->toContain('PH_TOOLKIT_ROUTES_ENABLED=true')
+            ->and($exception->getMessage())->toContain('.env')
+            ->and($exception->getMessage())->toContain('php artisan config:clear')
+            ->and($exception->getMessage())->toContain('vendor:publish --tag=ph-toolkit-config')
+            ->and($exception->getMessage())->toContain('config/ph-toolkit.php')
+            ->and($exception->getMessage())->toContain('route:list --path=ph-toolkit')
             ->and($exception->getPrevious())->toBeInstanceOf(RuntimeException::class);
 
         return;

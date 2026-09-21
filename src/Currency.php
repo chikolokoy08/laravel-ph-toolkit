@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Chikolokoy08\PhToolkit;
 
+use Chikolokoy08\PhToolkit\Exceptions\MissingIntlExtension;
 use IntlException;
 use NumberFormatter;
 use ValueError;
@@ -27,6 +28,23 @@ final class Currency
      */
     private const MAX_DECIMALS = 100;
 
+    /**
+     * A well formed BCP 47 language tag. Intl accepts any tag of this shape,
+     * whether or not it names a locale anyone uses, and rejects everything
+     * else. PHP's NumberFormatter is not consistent about that: PHP 8.2 takes
+     * "not a locale" and quietly falls back to a default, where later versions
+     * throw. Checking the shape first makes the answer the same on every
+     * supported PHP version, and the same as the JavaScript package's.
+     */
+    private const LOCALE_PATTERN = '/\A
+        [A-Za-z]{2,8}                                      # language
+        (?:-[A-Za-z]{4})?                                  # script
+        (?:-(?:[A-Za-z]{2}|[0-9]{3}))?                     # region
+        (?:-(?:[0-9A-Za-z]{5,8}|[0-9][0-9A-Za-z]{3}))*     # variants
+        (?:-[0-9A-WY-Za-wy-z](?:-[0-9A-Za-z]{2,8})+)*      # extensions
+        (?:-[Xx](?:-[0-9A-Za-z]{1,8})+)?                   # private use
+        \z/x';
+
     private function __construct()
     {
         //
@@ -35,6 +53,10 @@ final class Currency
     /**
      * Formats a number as Philippine pesos, or returns null if the value is
      * not finite or the options are out of range.
+     *
+     * This is the one part of the package that needs the intl extension. It
+     * throws MissingIntlExtension when that is not installed, because a
+     * missing extension is a broken environment rather than bad input.
      *
      * @param  string  $locale  BCP 47 locale tag.
      * @param  int  $decimals  Fixed number of decimal places, 0 through 100.
@@ -49,6 +71,15 @@ final class Currency
         string $locale = self::DEFAULT_LOCALE,
         int $decimals = self::DEFAULT_DECIMALS,
     ): ?string {
+        // Checked before the arguments: a missing extension is a broken server
+        // rather than a value the caller can correct, and reporting it only for
+        // some inputs would hide it. extension_loaded is called unqualified on
+        // purpose, as that is the seam the test for a machine without intl
+        // shadows.
+        if (! extension_loaded('intl')) {
+            throw MissingIntlExtension::forPesoFormatting();
+        }
+
         if ($value === null || ! is_finite((float) $value)) {
             return null;
         }
@@ -57,11 +88,16 @@ final class Currency
             return null;
         }
 
+        if (preg_match(self::LOCALE_PATTERN, $locale) !== 1) {
+            return null;
+        }
+
         try {
             $formatter = new NumberFormatter($locale, NumberFormatter::CURRENCY);
         } catch (ValueError|IntlException) {
-            // Intl rejects a malformed locale tag. Formatters report bad input
-            // by returning null, so this is not allowed to escape.
+            // A well formed tag that this build of ICU does not know. Formatters
+            // report bad input by returning null, so this is not allowed to
+            // escape.
             return null;
         }
 

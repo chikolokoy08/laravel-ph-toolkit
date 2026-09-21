@@ -111,7 +111,8 @@ invalid input rather than throwing. The casts are the exception: they throw
 
 **Input types.** Validators and formatters take `?string` and treat `null` as
 invalid. Anything else is a `TypeError`, which is what the signature is for.
-`Currency::formatPeso()` takes `int|float|null`.
+`Currency::formatPeso()` takes `int|float|null`, and its `locale` has to be a
+well formed BCP 47 tag.
 
 **Invalid UTF-8.** PHP strings are byte strings, so a caller can pass bytes
 that are not valid UTF-8. Validators return `false` and formatters return
@@ -121,10 +122,10 @@ well formed.
 
 ## Documentation
 
-- [Validating form input](docs/validation.md)
-- [Storing mobile numbers and TINs](docs/casts.md)
-- [The address selector](docs/address-selector.md)
-- [Updating the PSGC dataset](docs/updating-psgc.md)
+- [Validating form input](https://github.com/chikolokoy08/laravel-ph-toolkit/blob/main/docs/validation.md)
+- [Storing mobile numbers and TINs](https://github.com/chikolokoy08/laravel-ph-toolkit/blob/main/docs/casts.md)
+- [The address selector](https://github.com/chikolokoy08/laravel-ph-toolkit/blob/main/docs/address-selector.md)
+- [Updating the PSGC dataset](https://github.com/chikolokoy08/laravel-ph-toolkit/blob/main/docs/updating-psgc.md)
 
 ## Supported versions
 
@@ -133,9 +134,23 @@ well formed.
 | PHP | 8.2, 8.3, 8.4, 8.5 |
 | Laravel | 12, 13 |
 
-PHP 8.2 is the floor because Laravel 12 still supports it. `ext-intl` is
-required: `Currency::formatPeso()` uses `NumberFormatter`, and name search
-folds accents with `Normalizer`.
+PHP 8.2 is the floor because Laravel 12 still supports it.
+
+### ext-intl
+
+Suggested, not required. Everything works without it except one thing:
+
+`Currency::formatPeso()` needs `NumberFormatter`, so it throws
+`MissingIntlExtension` when the extension is missing. That is a server problem
+rather than a bad value, so it throws where the other formatters return `null`,
+and the message says how to install and enable the extension. The `formatPeso`
+method on the `PhToolkit` facade is the same method, so it behaves the same way.
+
+Everything else runs without `ext-intl`: the validators, the formatters for
+mobile numbers and TINs, the rules, the casts, and the whole PSGC address
+dataset including name search. Search folds accents with `Normalizer` when it
+is available and with a built-in table for the Latin ranges when it is not.
+Both paths are tested to agree on every one of the 43,768 names in the dataset.
 
 ## Data source
 
@@ -159,7 +174,7 @@ Two points where the data is not as tidy as it looks:
   (Not a Province)" and "Special Geographic Area". They ship as provinces with
   `isProvince` set to false, under the names the PSA publishes.
 
-Both are covered in [the address selector guide](docs/address-selector.md).
+Both are covered in [the address selector guide](https://github.com/chikolokoy08/laravel-ph-toolkit/blob/main/docs/address-selector.md).
 
 ## A JavaScript version exists
 
@@ -171,4 +186,4 @@ number in the browser and again on the server, both will agree.
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](https://github.com/chikolokoy08/laravel-ph-toolkit/blob/main/LICENSE).

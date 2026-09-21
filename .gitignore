@@ -1,4 +1,5 @@
 /vendor/
+/tests/js/node_modules/
 /build/
 composer.lock
 .phpunit.result.cache

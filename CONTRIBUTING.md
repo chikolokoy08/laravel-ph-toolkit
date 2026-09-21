@@ -5,10 +5,17 @@ updates are all useful.
 
 ## Setup
 
-PHP 8.2 or later with `ext-intl`.
+PHP 8.2 or later. `ext-intl` is optional for the package but needed to run the
+whole suite.
 
 ```bash
 composer install
+```
+
+The address selector's browser script has its own suite, run with Node:
+
+```bash
+cd tests/js && npm ci && npm test
 ```
 
 ## Scripts
@@ -49,8 +56,11 @@ Laravel integration lives under `src/Laravel/`. A test walks the source tree
 and fails if that ever stops being true, which is also why the test suite is
 split: the Core suite boots no application at all.
 
-Runtime dependencies stay at `illuminate/support`, `illuminate/contracts`, and
-`ext-intl`. Everything else is a dev dependency.
+Runtime dependencies stay at `illuminate/support` and `illuminate/contracts`.
+`ext-intl` is suggested, not required: only `Currency::formatPeso()` needs it,
+and it throws a `MissingIntlExtension` naming the fix when it is absent.
+Anything new that would need an extension has to degrade the same way, or not
+need it. Everything else is a dev dependency.
 
 ## Tests
 
@@ -59,6 +69,9 @@ Pest with Orchestra Testbench, under `tests/`.
 - `tests/Core/` runs on plain Pest with no framework booted.
 - `tests/Laravel/` runs on Testbench.
 - `tests/Support/` holds helpers, not tests.
+- `tests/js/` holds the browser tests for the address selector's script, run
+  with Node's test runner against jsdom. They read the script out of the Blade
+  template, so they test what actually ships.
 
 Package configuration that is read at boot, such as whether the address routes
 exist, has to be set before the providers run. Use the `withPackageConfig()`

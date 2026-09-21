@@ -24,7 +24,9 @@ matching behaviour.
 - `Currency::formatPeso()`, wrapping `NumberFormatter` with `locale` and
   `decimals` options. ICU's rounding mode is set to half away from zero, which
   is what `Intl.NumberFormat` does and what keeps the output identical to the
-  npm package's.
+  npm package's. The locale tag's shape is checked before it reaches Intl, so
+  a malformed tag returns `null` on every supported PHP version rather than
+  formatting with a fallback on 8.2 and throwing on later versions.
 - Mobile numbers and TINs ignore spaces, dashes, dots, and parentheses,
   including the Unicode spaces and the byte order mark that JavaScript's `\s`
   covers and PCRE's does not.
@@ -65,8 +67,12 @@ matching behaviour.
 
 ### Notes
 
-- Requires `ext-intl`, which is what allows `Currency::formatPeso()` to match
-  the npm package byte for byte and name search to fold accents.
+- `ext-intl` is suggested rather than required. `Currency::formatPeso()` needs
+  it and throws `MissingIntlExtension` when it is missing, naming the steps to
+  install and enable it. Everything else works without it, including the
+  validators, the casts, the rules, and the PSGC address data. Name search
+  folds accents with `Normalizer` when it is there and with a built-in table
+  for the Latin ranges when it is not.
 - Validators take `?string` and formatters take `?string` or
   `int|float|null`. `null` is invalid input, and anything else is a
   `TypeError`. The npm package accepts anything and returns `false` or `null`,

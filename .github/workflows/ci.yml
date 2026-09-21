@@ -37,7 +37,22 @@ jobs:
       - uses: ramsey/composer-install@v4
         with:
           dependency-versions: highest
-      - run: vendor/bin/phpstan analyse --no-progress
+      - run: vendor/bin/phpstan analyse --no-progress --memory-limit=512M
+
+  selector:
+    name: Address selector script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: tests/js/package-lock.json
+      - run: npm ci
+        working-directory: tests/js
+      - run: npm test
+        working-directory: tests/js
 
   tests:
     name: PHP ${{ matrix.php }}, Laravel ${{ matrix.laravel }}, ${{ matrix.dependencies }}

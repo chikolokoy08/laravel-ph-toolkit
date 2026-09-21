@@ -52,7 +52,29 @@ describe('formatPeso', function (): void {
         'more than Intl allows' => [101],
     ]);
 
-    it('returns null for a malformed locale tag', function (): void {
-        expect(Currency::formatPeso(1234.5, locale: 'not a locale'))->toBeNull();
-    });
+    it('returns null for a malformed locale tag', function (string $locale): void {
+        // The shape is checked before the tag reaches Intl, because PHP 8.2
+        // formats with a fallback locale here where later versions throw.
+        expect(Currency::formatPeso(1234.5, locale: $locale))->toBeNull();
+    })->with([
+        'words' => ['not a locale'],
+        'underscore instead of dash' => ['en_PH'],
+        'empty' => [''],
+        'digits' => ['123'],
+        'one letter' => ['a'],
+        'trailing dash' => ['en-'],
+        'double dash' => ['en--PH'],
+        'subtag too long' => ['en-PHILIPPINES'],
+    ]);
+
+    it('accepts the tags a Philippine application actually uses', function (string $locale): void {
+        expect(Currency::formatPeso(1234.5, locale: $locale))->toBe('₱1,234.50');
+    })->with([
+        'en-PH' => ['en-PH'],
+        'fil-PH' => ['fil-PH'],
+        'ceb-PH' => ['ceb-PH'],
+        'tl' => ['tl'],
+        'case insensitive' => ['EN-ph'],
+        'with an extension' => ['en-PH-u-nu-latn'],
+    ]);
 });
